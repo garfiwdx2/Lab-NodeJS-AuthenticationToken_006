@@ -1,47 +1,47 @@
-const pool = require('../db');
+import pool from '../db/index.js';
 
-// CREATE - เพิ่มข้อมูล
-exports.createBook = async (req, res) => {
+// CREATE
+export const createBook = async (req, res) => {
   try {
     const { title, author, published_year } = req.body;
     const result = await pool.query(
       'INSERT INTO books (title, author, published_year) VALUES ($1, $2, $3) RETURNING *',
       [title, author, published_year]
     );
-    res.status(201).json(result.rows[0]); // 201 Created
-  } catch (err) {
-    res.status(500).json({ error: err.message }); // 500 Server Error
-  }
-};
-
-// READ - ดูทั้งหมด
-exports.getBooks = async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM books');
-    res.status(200).json(result.rows); // 200 OK
+    res.status(201).json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// READ - ดูตาม id
-exports.getBookById = async (req, res) => {
+// READ - all
+export const getBooks = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM books');
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// READ - by id
+export const getBookById = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query('SELECT * FROM books WHERE id = $1', [id]);
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Book not found' }); // 404 Not Found
+      return res.status(404).json({ message: 'Book not found' });
     }
 
-    res.status(200).json(result.rows[0]); // 200 OK
+    res.status(200).json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// UPDATE - แก้ไข
-exports.updateBook = async (req, res) => {
+// UPDATE
+export const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, author, published_year } = req.body;
@@ -55,23 +55,26 @@ exports.updateBook = async (req, res) => {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    res.status(200).json(result.rows[0]); // 200 OK
+    res.status(200).json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// DELETE - ลบ
-exports.deleteBook = async (req, res) => {
+// DELETE
+export const deleteBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query('DELETE FROM books WHERE id = $1 RETURNING *', [id]);
+    const result = await pool.query(
+      'DELETE FROM books WHERE id = $1 RETURNING *',
+      [id]
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    res.sendStatus(204); // 204 No Content
+    res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
