@@ -1,20 +1,14 @@
-<<<<<<< HEAD
-import express from 'express';
-import {getBooks,getBookById,createBook,updateBook,deleteBook} from '../controllers/bookController.js';
+import express from "express";
+import { register, login, refresh } from "../controllers/authController.js";
 
-import { register } from '../controllers/authController.js';
-import router from './bookRoutes.js';
+const router = express.Router();
 
-router.post('/register', register);
+router.post("/", (req, res) => {
+  res.sendStatus(404);
+});
 
-=======
-import express from 'express';
-import {getBooks,getBookById,createBook,updateBook,deleteBook} from '../controllers/bookController.js';
+router.post("/register", register);
+router.post("/login", login);
+router.post("/refresh", refresh);
 
-import { register } from '../controllers/authController.js';
-import router from './bookRoutes.js';
-
-router.post('/register', register);
-
->>>>>>> 4977811d20c85a185fc260bccd217caad4ea6ddf
 export default router;
